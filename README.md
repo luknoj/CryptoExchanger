@@ -21,9 +21,9 @@ Launch the server and client
 ```
 npm start
 ```
-#### Server server/
+#### Server 
 ```
-node server.js
+node server/server.js
 ```
 
 
