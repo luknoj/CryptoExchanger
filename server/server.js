@@ -35,20 +35,19 @@ exchange = (value, from, to) => {
   } else {
     var lastNode = (Graph.alg.dijkstra(currencyGraph, from))[to].predecessor
     var distance = (Graph.alg.dijkstra(currencyGraph, from))[to].distance;
-    var finalCurrency = to;
-    while(distance != 0){
-      value *= currencyGraph.edge(from, lastNode).value;
-      from = lastNode;
-      distance--;
+    while(distance != 1){
+      distance = (Graph.alg.dijkstra(currencyGraph, from))[nextNode].distance;
       if(distance == 1){
-        lastNode = finalCurrency;
-      } else if (distance == 0){
-        return value;
-      }
-      else {  
-        to = (Graph.alg.dijkstra(currencyGraph, lastNode))[finalCurrency].predecessor;
+        value *= currencyGraph.edge(from, nextNode).value;
+        from = nextNode;
+        distance = (Graph.alg.dijkstra(currencyGraph, from))[to].distance;
+        nextNode = (Graph.alg.dijkstra(currencyGraph, from))[to].predecessor;
+      } else {
+        nextNode = (Graph.alg.dijkstra(currencyGraph, from))[nextNode].predecessor;
       }
     }
+    value *= currencyGraph.edge(from, to).value;
+    return value;
   }
 };
 socket.on('connection', (client) => {
