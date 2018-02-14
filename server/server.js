@@ -33,7 +33,7 @@ exchange = (value, from, to) => {
   if((Graph.alg.dijkstra(currencyGraph, from))[to].distance == 1){
     return (value *= currencyGraph.edge(from, to).value);
   } else {
-    var lastNode = (Graph.alg.dijkstra(currencyGraph, from))[to].predecessor
+    var nextNode = (Graph.alg.dijkstra(currencyGraph, from))[to].predecessor
     var distance = (Graph.alg.dijkstra(currencyGraph, from))[to].distance;
     while(distance != 1){
       distance = (Graph.alg.dijkstra(currencyGraph, from))[nextNode].distance;
