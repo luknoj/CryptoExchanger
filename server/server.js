@@ -10,7 +10,6 @@ var data = axios.get('https://api.abucoins.com/products/ticker')
       currencyGraph.setEdge(splitted[0], splitted[1], { value: parseFloat(key.price, 10) });
       currencyGraph.setEdge(splitted[1], splitted[0], { value: 1 / parseFloat(key.price, 10) });
     }));
-    console.log("Initial data");
   })
 setInterval(() => {
   data = axios.get('https://api.abucoins.com/products/ticker')
@@ -21,7 +20,6 @@ setInterval(() => {
       currencyGraph.setEdge(splitted[0], splitted[1], { value: parseFloat(key.price, 10) });
       currencyGraph.setEdge(splitted[1], splitted[0], { value: 1 / parseFloat(key.price, 10) });
     }));
-    console.log("Refresh data time: " + response.data[0].time);
     return response.data;
   });
 }, 60000);
@@ -37,13 +35,20 @@ exchange = (value, from, to) => {
   } else {
     var lastNode = (Graph.alg.dijkstra(currencyGraph, from))[to].predecessor
     var distance = (Graph.alg.dijkstra(currencyGraph, from))[to].distance;
+    var finalCurrency = to;
     while(distance != 0){
       value *= currencyGraph.edge(from, lastNode).value;
       from = lastNode;
       distance--;
-      lastNode = to;
+      if(distance == 1){
+        lastNode = finalCurrency;
+      } else if (distance == 0){
+        return value;
+      }
+      else {  
+        to = (Graph.alg.dijkstra(currencyGraph, lastNode))[finalCurrency].predecessor;
+      }
     }
-    return value;
   }
 };
 socket.on('connection', (client) => {
@@ -95,5 +100,5 @@ socket.on('connection', (client) => {
   });
 });
 
-socket.listen(8002);
+socket.listen(8000);
 console.log("Listening on port 8000");
